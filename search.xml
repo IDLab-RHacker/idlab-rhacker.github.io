@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>1</title>
+      <link href="2021/04/14/1/"/>
+      <url>2021/04/14/1/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/04/14/1/image-20210414193503128.png" alt="image-20210414193503128"></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hello World</title>
       <link href="2021/04/14/hello-world/"/>
       <url>2021/04/14/hello-world/</url>
@@ -33,7 +46,7 @@
       <link href="2021/03/22/%E7%97%95%E8%BF%B9%E6%B8%85%E7%90%86/"/>
       <url>2021/03/22/%E7%97%95%E8%BF%B9%E6%B8%85%E7%90%86/</url>
       
-        <content type="html"><![CDATA[<p><strong>Powershell 修改文件时间戳</strong></p><p><img src="../images//image-20210414185245739.png" alt="image-20210414185245739"></p><pre class="line-numbers language-none"><code class="language-none">Function edit_time($path)&#123;$date1 &#x3D;Get-ChildItem | Select LastWriteTime|Get-Random;$date2 &#x3D;Get-ChildItem |Select LastWriteTime|Get-Random;$date3 &#x3D;Get-ChildItem |Select LastWriteTime|Get-Random;$(Get-Item $path).lastaccesstime&#x3D;$date1.LastWriteTime;$(Get-Item $path).creationtime&#x3D;$date2.LastWriteTime ;$(Get-Item $path).lastwritetime&#x3D;$date3.LastWriteTime&#125;;edit_time(&quot;C:\Users\saulGoodman\Desktop\工具包\pass.txt&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="/image-20210322191357399.png" alt="avatar"></p><p><strong>Powershell 清除系统日志</strong></p><pre class="line-numbers language-none"><code class="language-none">PowerShell -Command &quot;&amp; &#123;Clear-Eventlog -Log Application,System,Security&#125;&quot;Get-WinEvent -ListLog Application,Setup,Security -Force | % &#123;Wevtutil.exe cl $_.Logname&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>]]></content>
+        <content type="html"><![CDATA[<p><strong>Powershell 修改文件时间戳</strong></p><p><img src="/2021/03/22/%E7%97%95%E8%BF%B9%E6%B8%85%E7%90%86/image-20210414193749722.png" alt="image-20210414193749722"></p><pre class="line-numbers language-none"><code class="language-none">Function edit_time($path)&#123;$date1 &#x3D;Get-ChildItem | Select LastWriteTime|Get-Random;$date2 &#x3D;Get-ChildItem |Select LastWriteTime|Get-Random;$date3 &#x3D;Get-ChildItem |Select LastWriteTime|Get-Random;$(Get-Item $path).lastaccesstime&#x3D;$date1.LastWriteTime;$(Get-Item $path).creationtime&#x3D;$date2.LastWriteTime ;$(Get-Item $path).lastwritetime&#x3D;$date3.LastWriteTime&#125;;edit_time(&quot;C:\Users\saulGoodman\Desktop\工具包\pass.txt&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="/2021/03/22/%E7%97%95%E8%BF%B9%E6%B8%85%E7%90%86/image-20210322191357399.png" alt="avatar"></p><p><strong>Powershell 清除系统日志</strong></p><pre class="line-numbers language-none"><code class="language-none">PowerShell -Command &quot;&amp; &#123;Clear-Eventlog -Log Application,System,Security&#125;&quot;Get-WinEvent -ListLog Application,Setup,Security -Force | % &#123;Wevtutil.exe cl $_.Logname&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>``</p><p>![](/Users/rhacker/Library/Application Support/typora-user-images/image-20210322191314207.png)</p><p><img src="../images//image-20210414190946460.png" alt="image-20210414190946460"></p>]]></content>
       
       
       
