@@ -85,33 +85,6 @@
     </entry>
     
     
-    
-    <entry>
-      <title>内网渗透之docker逃逸至域控</title>
-      <link href="2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/"/>
-      <url>2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>人的一生除去睡眠只有一万多天～ 人与人的不同在于：你是真的活了一万多天，还是仅仅生活了一天，却重复了一万多次！</p></blockquote><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​    清晰的记得19年10月左右，有个职业技能赛打进了线下，线下决赛模式就是综合靶场渗透。当时还信心满满，可惜考点竟然有个docker逃逸，当时没有了解过docke逃逸，最终没有取得一个好的成绩。</p><p>​    终于，，，最近几天无意中找到了那套靶机环境，特意重新做了下，发现期间也是有一些坑，所以特意写下此篇文章分享给大家～<br>​</p><h2 id="0x01-环境搭建"><a href="#0x01-环境搭建" class="headerlink" title="0x01 环境搭建"></a>0x01 环境搭建</h2><p>靶机地址：<a href="http://vulnstack.qiyuanxuetang.net/vuln/detail/6/">http://vulnstack.qiyuanxuetang.net/vuln/detail/6/</a></p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640.png" alt="img"></p><table><thead><tr><th><strong>名称</strong></th><th><strong>服务器</strong></th><th><strong>系统</strong></th><th><strong>网卡</strong></th></tr></thead><tbody><tr><td><strong>VM1</strong></td><td>Web服务器</td><td>ubuntu x64</td><td>NAT：192.168.213.136主机：192.168.138.135</td></tr><tr><td><strong>VM2</strong></td><td>域成员</td><td>windows 7</td><td>主机：192.168.138.136</td></tr><tr><td><strong>VM3</strong></td><td>域控服务器</td><td>windows server 2008 R2 x64</td><td>主机：192.168.138.137</td></tr></tbody></table><h2 id="0x02-外网打点"><a href="#0x02-外网打点" class="headerlink" title="0x02 外网打点"></a>0x02 外网打点</h2><p>扫描端口也不难发现，一共有三处web服务，分别对应8001-3，因主要讲的是docker逃逸，所以外网打点不详细介绍，这里以st2-045为主。其他两个</p><p>则分别是phpmyadmin getshell 和tomcat 漏洞利用。</p><p>直接利用st2类似的工具拿shell</p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105844268.png" alt="img"></p><p>这里发现通过ls -al / 发现了.dockerenv文件，通过这一信息基本上就可以确定当前环境是在docker环境下</p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105847257.png" alt="img"></p><p>通过fdisk -l命令可以发现看到磁盘的挂载情况，通过这一特性可以发现此docker环境是开启了特权模式，所以可以通过这一模式来获取物理机的shell。</p><blockquote><p>特权模式于版本0.6时被引入Docker，允许容器内的root拥有外部物理机root权限，而此前容器内root用户仅拥有外部物理机普通用户权限。使用特权模式启动容器，可以获取大量设备文件访问权限。因为当管理员执行docker run —privileged时，Docker容器将被允许访问主机上的所有设备，并可以执行mount命令进行挂载。当控制使用特权模式启动的容器时，docker管理员可通过mount命令将外部宿主机磁盘设备挂载进容器内部，获取对整个宿主机的文件读写权限，此外还可以通过写入计划任务等方式在宿主机执行命令。</p></blockquote><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105851061.png" alt="img"></p><p>这里获取物理机的shell是通过ssh写密钥的方式。</p><p>先在kali生成密钥</p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105854799.png" alt="img"></p><p>再把公钥idlab.pub直接写进.ssh/authorized_keys里面</p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105857055.png" alt="img"></p><p>这里为了后面传文件方便，用了ssh连接的工具，如果用命令的话也可以，ssh -i 即可。</p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105859398.png" alt="img"></p><p>(ps: 除此意外使用cve-2019-5736也可以实现docker逃逸，就是稍微麻烦了点～</p><p>exp地址：<a href="https://github.com/Frichetten/CVE-2019-5736-PoC%EF%BC%89">https://github.com/Frichetten/CVE-2019-5736-PoC）</a></p><h2 id="0x03-内网渗透"><a href="#0x03-内网渗透" class="headerlink" title="0x03 内网渗透"></a>0x03 内网渗透</h2><p>使用msf自带的ms17模块可以发现无法获取shell，会一直提示fail，这里我曾经在真实环境上也遇见过，当时记得是内网有台防火墙给拦截了～ 这里很明显是没有防火墙设备的，具体原因没去研究过，但是经过好几次的尝试应该就是代理这一块协议的问题。因为我直接连接这台主机是可以打出来的。</p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105904037.png" alt="img"></p><p>但是我们依然可以绕过去，通过永恒之蓝的双倍脉冲模块</p><p>（Eternalblue_doublepulsar）来获取会话</p><p><a href="https://github.com/ElevenPaths/Eternalblue-Doublepulsar-Metasploit">https://github.com/ElevenPaths/Eternalblue-Doublepulsar-Metasploit</a></p><p>（通过这种方式也可以绕过一些waf）</p><p><img src="/2021/04/15/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B9%8Bdocker%E9%80%83%E9%80%B8%E8%87%B3%E5%9F%9F%E6%8E%A7/640-20210415105907742.png" alt="img"></p><p>后面则是通过mimikatz抓取用户的密码，whoami /all获取用户的sid，再利用ms14-068生成票据即可获取域管理员的权限。再上传mimikatz即可获取域管理员的密码，这些操作几乎和上节内容相似，就不演示～ 至此内网渗透完毕</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 内网渗透 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 内网渗透 </tag>
-            
-            <tag> docker </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
   
   
 </search>
